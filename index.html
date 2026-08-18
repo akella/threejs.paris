@@ -2,12 +2,42 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+	<meta name="description"
+		content="Fling yourself off the Eiffel Tower into the three.js conference in Paris, 10-11 September.">
+	<meta name="theme-color" content="#0d0d0f">
+	<title>three.js conf Paris — Eiffel catapult</title>
 	<style>
-		*{margin:0;padding:0} 
-		canvas{display: block}
-		#container{width: 100vw;height: 100vh}
-    </style>
+		*{margin:0;padding:0}
+		html,body{
+			height:100%;
+			overflow:hidden;               /* no scroll = no rubber-band zoom */
+			overscroll-behavior:none;      /* kill pull-to-refresh */
+			background:#0d0d0f;
+			/* stop iOS inflating text in landscape */
+			-webkit-text-size-adjust:100%;
+			text-size-adjust:100%;
+		}
+		canvas{display:block}
+		#container{
+			width:100vw;
+			height:100vh;
+			height:100dvh;                 /* survives the iOS address bar */
+			/* the whole canvas is a drag surface: swallow pinch-zoom,
+			   double-tap-zoom and scroll gestures before Safari sees them */
+			touch-action:none;
+			-webkit-user-select:none;
+			user-select:none;
+			-webkit-touch-callout:none;
+			-webkit-tap-highlight-color:transparent;
+		}
+		/* iOS auto-zooms on focus when a field is under 16px — never shrink these */
+		input,button,textarea,select{
+			font-size:16px;
+			font-family:inherit;
+		}
+	</style>
 </head>
 <body>
 	<div id="container"></div>

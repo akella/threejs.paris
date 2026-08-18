@@ -25,10 +25,19 @@ const STICK_THICKNESS = 0.14;
 
 // --- popup design system: dark glass, hairline borders, one accent ---
 const ACCENT = "#f0623c";
+// clamp()s keep the card comfortable from a 320px phone up to desktop
 const POPUP_CARD =
-  "text-align:center;padding:56px 64px;max-width:560px;cursor:default;" +
+  "text-align:center;padding:clamp(30px,7vw,56px) clamp(22px,6vw,64px);" +
+  "max-width:min(560px,92vw);cursor:default;" +
   "border:1px solid rgba(255,255,255,.09);border-radius:20px;" +
   "background:rgba(13,13,15,.92);box-shadow:0 24px 80px rgba(0,0,0,.55)";
+// overlay: centres the card, but scrolls it instead of clipping when a
+// short screen can't fit the whole thing (body itself can't scroll)
+const POPUP_OVERLAY =
+  "position:fixed;inset:0;justify-content:center;align-items:center;" +
+  "padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;" +
+  "background:rgba(5,5,8,.7);font-family:system-ui,sans-serif;" +
+  "backdrop-filter:blur(10px)";
 const POPUP_EYEBROW =
   "display:flex;gap:9px;align-items:center;justify-content:center;" +
   "color:#8a8a90;font-size:12px;font-weight:600;letter-spacing:2.5px;" +
@@ -672,9 +681,7 @@ export default class Sketch {
   addVenuePopup() {
     const el = document.createElement("div");
     el.style.cssText =
-      "position:fixed;inset:0;display:none;align-items:center;justify-content:center;" +
-      "background:rgba(5,5,8,.7);z-index:100;font-family:system-ui,sans-serif;" +
-      "cursor:pointer;backdrop-filter:blur(10px)";
+      `${POPUP_OVERLAY};display:none;z-index:100;cursor:pointer`;
     el.innerHTML = `<div style="${POPUP_CARD}">
         <div style="${POPUP_EYEBROW}"><span style="${POPUP_DOT}"></span>three.js conf &mdash; Paris</div>
         <h1 style="margin:22px 0 10px;color:#f2f2f4;font-size:40px;font-weight:650;
@@ -711,10 +718,7 @@ export default class Sketch {
 
   showWelcome() {
     const el = document.createElement("div");
-    el.style.cssText =
-      "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;" +
-      "background:rgba(5,5,8,.7);z-index:110;font-family:system-ui,sans-serif;" +
-      "backdrop-filter:blur(10px)";
+    el.style.cssText = `${POPUP_OVERLAY};display:flex;z-index:110`;
     el.innerHTML = `
       <div style="${POPUP_CARD}">
         <div style="${POPUP_EYEBROW}"><span style="${POPUP_DOT}"></span>three.js conf &mdash; Paris</div>
@@ -735,15 +739,15 @@ export default class Sketch {
           I'm in</button>
       </div>`;
     document.body.appendChild(el);
-    const input0 = el.querySelector("input");
-    input0.addEventListener("focus", () => {
-      input0.style.borderColor = "rgba(240,98,60,.6)";
-    });
-    input0.addEventListener("blur", () => {
-      input0.style.borderColor = "rgba(255,255,255,.14)";
-    });
 
     const input = el.querySelector("input");
+    input.addEventListener("focus", () => {
+      input.style.borderColor = "rgba(240,98,60,.6)";
+    });
+    input.addEventListener("blur", () => {
+      input.style.borderColor = "rgba(255,255,255,.14)";
+    });
+
     const start = () => {
       this.playerName = input.value.trim();
       this.setBallName(); // no-op if the tower/ball isn't built yet
@@ -754,7 +758,11 @@ export default class Sketch {
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") start();
     });
-    setTimeout(() => input.focus(), 50);
+    // desktop only: autofocusing on a phone throws up the keyboard and
+    // hides half the card before anyone has read it
+    if (!window.matchMedia("(pointer: coarse)").matches) {
+      setTimeout(() => input.focus(), 50);
+    }
   }
 
   scoreBasket() {
