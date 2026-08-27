@@ -24,7 +24,7 @@ const STICK_HEIGHT = 2;
 const STICK_THICKNESS = 0.14;
 
 // --- popup design system: dark glass, hairline borders, one accent ---
-const ACCENT = "#f0623c";
+const ACCENT = "#948aea";
 // clamp()s keep the card comfortable from a 320px phone up to desktop
 const POPUP_CARD =
   "text-align:center;padding:clamp(30px,7vw,56px) clamp(22px,6vw,64px);" +
@@ -42,8 +42,7 @@ const POPUP_EYEBROW =
   "display:flex;gap:9px;align-items:center;justify-content:center;" +
   "color:#8a8a90;font-size:12px;font-weight:600;letter-spacing:2.5px;" +
   "text-transform:uppercase";
-const POPUP_DOT =
-  `width:6px;height:6px;border-radius:50%;background:${ACCENT};flex:none`;
+const POPUP_DOT = `width:6px;height:6px;border-radius:50%;background:${ACCENT};flex:none`;
 const POPUP_PILL =
   "display:inline-block;padding:10px 22px;border-radius:999px;" +
   "background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);" +
@@ -52,13 +51,13 @@ const POPUP_PILL =
 const POPUP_CTA =
   "display:inline-block;margin-top:22px;padding:15px 42px;border-radius:999px;" +
   `background:${ACCENT};color:#fff;font-size:14px;font-weight:700;` +
-  "letter-spacing:2px;text-transform:uppercase;text-decoration:none";
+  "text-decoration:none";
 
 // --- Paris city tiles ---
 const USE_CITY = true;
 // NOTE: local dev only — move to an env var before deploying anywhere public
 const ION_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjZWNmYjZhZS04MWQ0LTQ0ZWUtOTRjZS0xMDU4MDMyZGNjY2UiLCJpZCI6NDY3NTA2LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3ODY2MDcyNzJ9.V_5VBP232kYedfNoF575p5UbUSL1sxwTS9N031V-Wj8";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6InNkOUVFNTZiRVRpNzhqd2oiLCJqdGkiOiJkNWI5N2EyZC1jZDUzLTQ3NGYtOTRiYy0zOGQ0NDAwYjc3YTIiLCJpZCI6NDY5NTk3LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3ODcxMjczMDl9.slXUJo5iGbpw3_zkrUsnEYOtK3TGc3JWJYmeQQiDfpE";
 const ION_ASSET_GOOGLE_TILES = "2275207"; // Google Photorealistic 3D Tiles
 const EIFFEL_LAT = 48.85837;
 const EIFFEL_LON = 2.29448;
@@ -84,10 +83,7 @@ const _normal3 = new THREE.Vector3();
 
 // funnel radius at height fraction t in [0, 1]
 function funnelRadius(t) {
-  return (
-    VENUE_BOTTOM_RADIUS +
-    (VENUE_TOP_RADIUS - VENUE_BOTTOM_RADIUS) * Math.pow(t, VENUE_FLARE)
-  );
+  return VENUE_BOTTOM_RADIUS + (VENUE_TOP_RADIUS - VENUE_BOTTOM_RADIUS) * Math.pow(t, VENUE_FLARE);
 }
 
 const BASKET_VERTEX = /* glsl */ `
@@ -142,7 +138,7 @@ function quadBezierLength(a, control, b, divisions = 24) {
     _p.set(
       s * s * a.x + 2 * s * t * control.x + t * t * b.x,
       s * s * a.y + 2 * s * t * control.y + t * t * b.y,
-      s * s * a.z + 2 * s * t * control.z + t * t * b.z
+      s * s * a.z + 2 * s * t * control.z + t * t * b.z,
     );
     length += _p.distanceTo(_pPrev);
     _pPrev.copy(_p);
@@ -166,12 +162,7 @@ export default class Sketch {
 
     this.container.appendChild(this.renderer.domElement);
 
-    this.camera = new THREE.PerspectiveCamera(
-      70,
-      this.width / this.height,
-      0.01,
-      1000
-    );
+    this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.01, 1000);
     this.camera.position.set(2.4, 1.8, 3.2);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -194,6 +185,7 @@ export default class Sketch {
       });
     }
 
+    this.addCesiumCredit();
     this.addLights();
     this.addGround();
     if (USE_CITY) this.addCity();
@@ -334,6 +326,36 @@ export default class Sketch {
     if (this.aimMaterial) this.aimMaterial.resolution.set(this.width, this.height);
   }
 
+  addCesiumCredit() {
+    const el = document.createElement("a");
+    el.href = "https://ion.cesium.com/";
+    el.target = "_blank";
+    el.rel = "noopener noreferrer";
+    el.textContent = "Made possible with support from Cesium ion";
+    el.setAttribute("aria-label", "Made possible with support from Cesium ion");
+
+    el.style.cssText =
+      "position:fixed;top:18px;right:20px;z-index:9000;" +
+      "color:rgba(255,255,255,.72);font:600 12px/1.2 system-ui,sans-serif;" +
+      "letter-spacing:.2px;text-decoration:none;" +
+      "padding:8px 10px;border-radius:5px;" +
+      "background:rgba(5,5,8,.28);backdrop-filter:blur(8px);" +
+      "-webkit-backdrop-filter:blur(8px);" +
+      "transition:color .2s ease,background .2s ease;";
+
+    el.addEventListener("mouseenter", () => {
+      el.style.color = "#fff";
+      el.style.background = "rgba(5,5,8,.5)";
+    });
+
+    el.addEventListener("mouseleave", () => {
+      el.style.color = "rgba(255,255,255,.72)";
+      el.style.background = "rgba(5,5,8,.28)";
+    });
+
+    document.body.appendChild(el);
+    this.cesiumCredit = el;
+  }
   addLights() {
     const light1 = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(light1);
@@ -357,7 +379,7 @@ export default class Sketch {
 
     this.shadowCatcher = new THREE.Mesh(
       new THREE.CircleGeometry(3.5, 48),
-      new THREE.ShadowMaterial({ opacity: 0.35 })
+      new THREE.ShadowMaterial({ opacity: 0.35 }),
     );
     this.shadowCatcher.rotation.x = -Math.PI / 2;
     this.shadowCatcher.position.y = 0.002;
@@ -365,10 +387,7 @@ export default class Sketch {
     this.scene.add(this.shadowCatcher);
 
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-    this.scene.environment = this.pmremGenerator.fromScene(
-      new RoomEnvironment(),
-      0.04
-    ).texture;
+    this.scene.environment = this.pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
     // HDR sky: background + lighting environment (replaces RoomEnvironment
     // once loaded)
@@ -391,7 +410,7 @@ export default class Sketch {
     this.sun.position.set(
       Math.sin(az) * Math.cos(el) * r,
       Math.sin(el) * r,
-      Math.cos(az) * Math.cos(el) * r
+      Math.cos(az) * Math.cos(el) * r,
     );
     this.sun.intensity = this.settings.sunIntensity;
     this.shadowCatcher.material.opacity = this.settings.shadowOpacity;
@@ -442,11 +461,7 @@ export default class Sketch {
     // constant perceived zoom rate: equal ratios per unit time
     const dist = intro.startDist * Math.pow(intro.endDist / intro.startDist, e);
     const pitch = THREE.MathUtils.lerp(intro.startPitch, intro.endPitch, e);
-    const bearing = THREE.MathUtils.lerp(
-      intro.startBearing,
-      intro.endBearing,
-      e
-    );
+    const bearing = THREE.MathUtils.lerp(intro.startBearing, intro.endBearing, e);
 
     const cp = Math.cos(pitch);
     this.camera.position
@@ -489,7 +504,7 @@ export default class Sketch {
 
     this.groundDisc = new THREE.Mesh(
       new THREE.CircleGeometry(5, 48),
-      new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.95 })
+      new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.95 }),
     );
     this.groundDisc.rotation.x = -Math.PI / 2;
     this.groundDisc.position.y = -0.001;
@@ -512,10 +527,10 @@ export default class Sketch {
         apiToken: ION_TOKEN,
         assetId: ION_ASSET_GOOGLE_TILES,
         autoRefreshToken: true,
-      })
+      }),
     );
     const dracoLoader = new DRACOLoader().setDecoderPath(
-      `https://unpkg.com/three@0.${REVISION}.x/examples/jsm/libs/draco/gltf/`
+      `https://unpkg.com/three@0.${REVISION}.x/examples/jsm/libs/draco/gltf/`,
     );
     this.tiles.registerPlugin(new GLTFExtensionsPlugin({ dracoLoader }));
     this.tiles.registerPlugin(new TileCompressionPlugin());
@@ -525,7 +540,7 @@ export default class Sketch {
         lat: EIFFEL_LAT * THREE.MathUtils.DEG2RAD,
         lon: EIFFEL_LON * THREE.MathUtils.DEG2RAD,
         height: GROUND_ELLIPSOID_HEIGHT,
-      })
+      }),
     );
 
     // squash the REAL Eiffel tower: everything above a street-level disc
@@ -542,17 +557,15 @@ export default class Sketch {
       latRad,
       lonRad,
       GROUND_ELLIPSOID_HEIGHT,
-      ecefPos
+      ecefPos,
     );
     this.tiles.ellipsoid.getCartographicToNormal(latRad, lonRad, ecefUp);
 
-    const flattenDisc = new THREE.Mesh(
-      new THREE.CircleGeometry(FLATTEN_RADIUS, 48)
-    );
+    const flattenDisc = new THREE.Mesh(new THREE.CircleGeometry(FLATTEN_RADIUS, 48));
     flattenDisc.position.copy(ecefPos);
     flattenDisc.quaternion.setFromUnitVectors(
       new THREE.Vector3(0, 0, 1), // CircleGeometry's normal
-      ecefUp
+      ecefUp,
     );
     flattenDisc.updateMatrixWorld(true);
     this.flatten.addShape(flattenDisc, ecefUp.clone().negate(), {
@@ -610,13 +623,8 @@ export default class Sketch {
       const t = i / PROFILE_STEPS;
       this.venueProfile.push([funnelRadius(t), 1 + (S - 1) * t]);
     }
-    const lathePoints = this.venueProfile.map(
-      ([r, y]) => new THREE.Vector2(r, y)
-    );
-    const funnel = new THREE.Mesh(
-      new THREE.LatheGeometry(lathePoints, 64),
-      wallMaterial
-    );
+    const lathePoints = this.venueProfile.map(([r, y]) => new THREE.Vector2(r, y));
+    const funnel = new THREE.Mesh(new THREE.LatheGeometry(lathePoints, 64), wallMaterial);
     this.venueBasket.add(funnel);
 
     // "three.js conf" label on all four sides (canvas texture, no font files)
@@ -665,14 +673,11 @@ export default class Sketch {
       latRad,
       lonRad,
       GROUND_ELLIPSOID_HEIGHT,
-      venuePos
+      venuePos,
     );
     this.tiles.ellipsoid.getCartographicToNormal(latRad, lonRad, venueUp);
     this.venueBasket.position.copy(venuePos);
-    this.venueBasket.quaternion.setFromUnitVectors(
-      new THREE.Vector3(0, 1, 0),
-      venueUp
-    );
+    this.venueBasket.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), venueUp);
     this.tiles.group.add(this.venueBasket);
 
     this.venueScored = false;
@@ -680,23 +685,22 @@ export default class Sketch {
 
   addVenuePopup() {
     const el = document.createElement("div");
-    el.style.cssText =
-      `${POPUP_OVERLAY};display:none;z-index:100;cursor:pointer`;
+    el.style.cssText = `${POPUP_OVERLAY};display:none;z-index:100;cursor:pointer`;
     el.innerHTML = `<div style="${POPUP_CARD}">
         <div style="${POPUP_EYEBROW}"><span style="${POPUP_DOT}"></span>three.js conf &mdash; Paris</div>
-        <h1 style="margin:22px 0 10px;color:#f2f2f4;font-size:40px;font-weight:650;
+        <h1 style="margin:22px 0 10px;color:#f2f2f4;font-size:40px;font-weight:300;
           letter-spacing:-.5px;line-height:1.15">
-          Right into the <span style="color:${ACCENT}">conf.</span></h1>
+          Right into the <span style="color:${ACCENT}">conf!</span> 🥳</h1>
         <p id="popup-see-you" style="color:#9a9aa0;font-size:18px;margin:0 0 24px">
           See you there.</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-          <span style="${POPUP_PILL}">Paris</span>
-          <span style="${POPUP_PILL}">10&ndash;11 September</span>
+          <span style="${POPUP_PILL}">📍 Paris</span>
+          <span style="${POPUP_PILL}">📅 10&ndash;11 September</span>
           <a href="https://threejs.paris" target="_blank" rel="noopener"
-            style="${POPUP_PILL}">threejs.paris &#8599;</a>
+            style="${POPUP_PILL}">🌐 threejs.paris &#8599;</a>
         </div>
         <div style="margin-top:26px;padding:18px 20px;border-radius:14px;
-          border:1px dashed rgba(240,98,60,.45);background:rgba(240,98,60,.06)">
+          border:1px dashed rgba(123, 46, 238, 0.45);background:rgba(255, 255, 255, 0.06)">
           <div style="color:#9a9aa0;font-size:12px;font-weight:600;
             letter-spacing:2px;text-transform:uppercase">15% off with code</div>
           <div style="margin-top:8px;color:${ACCENT};font-size:26px;font-weight:700;
@@ -723,10 +727,10 @@ export default class Sketch {
       <div style="${POPUP_CARD}">
         <div style="${POPUP_EYEBROW}"><span style="${POPUP_DOT}"></span>three.js conf &mdash; Paris</div>
         <div style="font-size:48px;margin-top:18px">&#128508;</div>
-        <h1 style="margin:14px 0 30px;color:#f2f2f4;font-size:32px;font-weight:650;
+        <h1 style="margin:14px 0 30px;color:#f2f2f4;font-size:32px;font-weight:300;
           letter-spacing:-.5px;line-height:1.2">
-          Can you get yourself to the<br/>
-          <span style="color:${ACCENT}">best three.js conference?</span></h1>
+          Can you catapult yourself to the<br/>
+          <span style="color:${ACCENT}">first Three.js conference?</span></h1>
         <input placeholder="Your name" maxlength="30" autocomplete="off"
           style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
           border-radius:999px;color:#f2f2f4;font-size:16px;padding:14px 26px;
@@ -734,15 +738,14 @@ export default class Sketch {
         <br/>
         <button style="margin-top:18px;background:${ACCENT};border:none;
           border-radius:999px;color:#fff;font-size:14px;font-weight:700;
-          padding:15px 42px;cursor:pointer;letter-spacing:2px;
-          text-transform:uppercase">
-          I'm in</button>
+          padding:15px 42px;cursor:pointer;">
+          Let's go!</button>
       </div>`;
     document.body.appendChild(el);
 
     const input = el.querySelector("input");
     input.addEventListener("focus", () => {
-      input.style.borderColor = "rgba(240,98,60,.6)";
+      input.style.borderColor = "rgba(112, 26, 241, 0.6)";
     });
     input.addEventListener("blur", () => {
       input.style.borderColor = "rgba(255,255,255,.14)";
@@ -793,14 +796,8 @@ export default class Sketch {
 
     material.onBeforeCompile = (shader) => {
       shader.vertexShader = shader.vertexShader
-        .replace(
-          "#include <common>",
-          "#include <common>\nvarying vec3 vRestPos;"
-        )
-        .replace(
-          "#include <begin_vertex>",
-          "#include <begin_vertex>\nvRestPos = position;"
-        );
+        .replace("#include <common>", "#include <common>\nvarying vec3 vRestPos;")
+        .replace("#include <begin_vertex>", "#include <begin_vertex>\nvRestPos = position;");
 
       shader.fragmentShader = shader.fragmentShader
         .replace(
@@ -838,7 +835,7 @@ export default class Sketch {
               a *= 0.5;
             }
             return v;
-          }`
+          }`,
         )
         .replace(
           "#include <color_fragment>",
@@ -859,13 +856,13 @@ export default class Sketch {
             rustBright,
             smoothstep(0.55, 0.95, patches * 0.72 + speckle * 0.40)
           );
-          diffuseColor.rgb = rustCol;`
+          diffuseColor.rgb = rustCol;`,
         )
         .replace(
           "#include <roughnessmap_fragment>",
           /* glsl */ `#include <roughnessmap_fragment>
           // oxide blooms are matte, remaining paint keeps a slight sheen
-          roughnessFactor = mix(0.55, 0.95, smoothstep(0.30, 0.75, patches));`
+          roughnessFactor = mix(0.55, 0.95, smoothstep(0.30, 0.75, patches));`,
         );
     };
 
@@ -904,7 +901,7 @@ export default class Sketch {
           STICK_THICKNESS,
           2,
           48,
-          2
+          2,
         );
         geometry.translate(0, STICK_HEIGHT / 2, 0);
         const material = new THREE.MeshStandardMaterial({
@@ -912,7 +909,7 @@ export default class Sketch {
           roughness: 0.4,
         });
         this.buildStick(geometry, material);
-      }
+      },
     );
   }
 
@@ -933,14 +930,8 @@ export default class Sketch {
       skinIndices.push(i0, i0 + 1, 0, 0);
       skinWeights.push(1 - w, w, 0, 0);
     }
-    geometry.setAttribute(
-      "skinIndex",
-      new THREE.Uint16BufferAttribute(skinIndices, 4)
-    );
-    geometry.setAttribute(
-      "skinWeight",
-      new THREE.Float32BufferAttribute(skinWeights, 4)
-    );
+    geometry.setAttribute("skinIndex", new THREE.Uint16BufferAttribute(skinIndices, 4));
+    geometry.setAttribute("skinWeight", new THREE.Float32BufferAttribute(skinWeights, 4));
 
     this.stick = new THREE.SkinnedMesh(geometry, material);
     this.stick.castShadow = true;
@@ -961,9 +952,7 @@ export default class Sketch {
     this.scene.add(this.skeletonHelper);
 
     // rest world position of each joint (base never moves, so these are static)
-    this.jointRest = this.bones.map(
-      (_, i) => new THREE.Vector3(0, i * segHeight, 0)
-    );
+    this.jointRest = this.bones.map((_, i) => new THREE.Vector3(0, i * segHeight, 0));
     this.tipRest = new THREE.Vector3(0, STICK_HEIGHT, 0);
 
     // single source of truth for the whole stick: a world-space tip point
@@ -994,7 +983,7 @@ export default class Sketch {
     // render as a ghost sphere frozen at the rest pose)
     this.tipHandle = new THREE.Mesh(
       new THREE.SphereGeometry(0.16, 24, 16),
-      new THREE.MeshStandardMaterial({ color: 0x2255ff, roughness: 0.3 })
+      new THREE.MeshStandardMaterial({ color: 0x2255ff, roughness: 0.3 }),
     );
     this.tipHandle.visible = false; // optional grab affordance, off by default
     this.bones[BONE_COUNT - 1].add(this.tipHandle);
@@ -1013,7 +1002,7 @@ export default class Sketch {
     this.aimArcCount = 96;
     this.aimPositions = new Float32Array(this.aimArcCount * 3);
     this.aimMaterial = new LineMaterial({
-      color: 0xff2222,
+      color: 0xd4af37,
       linewidth: 5, // px (worldUnits: false)
       dashed: true,
       dashSize: 0.22,
@@ -1040,9 +1029,7 @@ export default class Sketch {
   updateAimArc() {
     const k = this.settings.stiffness;
     const zeta = this.settings.damping / (2 * Math.sqrt(k));
-    const decay = Math.exp(
-      (-zeta * (Math.PI / 2)) / Math.sqrt(Math.max(1 - zeta * zeta, 1e-4))
-    );
+    const decay = Math.exp((-zeta * (Math.PI / 2)) / Math.sqrt(Math.max(1 - zeta * zeta, 1e-4)));
     this._arcVel
       .copy(this.tipRest)
       .sub(this.tipPoint)
@@ -1076,7 +1063,7 @@ export default class Sketch {
     this.ballRadius = 0.18;
     this.ball = new THREE.Mesh(
       new THREE.SphereGeometry(this.ballRadius, 32, 24),
-      new THREE.MeshStandardMaterial({ color: 0xdd1111, roughness: 0.3 })
+      new THREE.MeshStandardMaterial({ color: 0x948aea, roughness: 0.3 }),
     );
     this.ball.castShadow = true;
     this.scene.add(this.ball);
@@ -1086,9 +1073,7 @@ export default class Sketch {
     this.ballSeat = this.ballRadius * 0.55;
 
     // sit on the tip right away — don't wait for the first update tick
-    this.ball.position
-      .copy(this.renderTip)
-      .addScaledVector(this.tipTangent, this.ballSeat);
+    this.ball.position.copy(this.renderTip).addScaledVector(this.tipTangent, this.ballSeat);
 
     this.ballState = "riding"; // riding -> flying -> landed -> riding
     this.ballVel = new THREE.Vector3();
@@ -1137,7 +1122,7 @@ export default class Sketch {
         map: texture,
         transparent: true,
         depthTest: false, // stays readable when the ball ducks behind the tower
-      })
+      }),
     );
     this.nameTag.renderOrder = 5;
     const h = 0.14;
@@ -1160,7 +1145,7 @@ export default class Sketch {
         map: this.faceTexture,
         transparent: true,
         depthWrite: false,
-      })
+      }),
     );
     this.faceMesh.scale.setScalar(this.ballRadius * 1.8);
     this.scene.add(this.faceMesh);
@@ -1262,20 +1247,14 @@ export default class Sketch {
     }
     const blink = this.blinkClosed && this.fear < 0.35;
 
-    if (
-      Math.abs(this.fear - this._drawnFear) > 0.02 ||
-      blink !== this._drawnBlink
-    ) {
+    if (Math.abs(this.fear - this._drawnFear) > 0.02 || blink !== this._drawnBlink) {
       this.drawFace(this.fear, blink);
     }
 
     // face direction: mostly toward the camera, but steered toward the
     // mouse (screen-space offset mapped onto the camera's right/up axes)
     // so the ball appears to watch the cursor
-    const toCam = this._v1
-      .copy(this.camera.position)
-      .sub(this.ball.position)
-      .normalize();
+    const toCam = this._v1.copy(this.camera.position).sub(this.ball.position).normalize();
 
     this._v2.copy(this.ball.position).project(this.camera);
     let dx = this.pointer.x - this._v2.x;
@@ -1296,9 +1275,7 @@ export default class Sketch {
     // slides off the silhouette, which is what sells the cartoon depth
     // (1.15 = tangent plane just clears the surface; higher = more pop)
     const offset = this.settings?.faceOffset ?? 1.45;
-    this.faceMesh.position
-      .copy(this.ball.position)
-      .addScaledVector(dir, this.ballRadius * offset);
+    this.faceMesh.position.copy(this.ball.position).addScaledVector(dir, this.ballRadius * offset);
 
     if (this.nameTag) {
       this.nameTag.position.copy(this.ball.position);
@@ -1312,9 +1289,7 @@ export default class Sketch {
 
     if (this.ballState === "riding") {
       // sit on the tip, along the curve's end direction
-      this.ball.position
-        .copy(this.renderTip)
-        .addScaledVector(this.tipTangent, this.ballSeat);
+      this.ball.position.copy(this.renderTip).addScaledVector(this.tipTangent, this.ballSeat);
 
       // catapult release: the tip is fastest when the spring displacement
       // crosses zero (passing vertical). Detect the sign flip of
@@ -1324,9 +1299,7 @@ export default class Sketch {
         const dot = disp.dot(this.tipVel);
         if (this.prevDot < 0 && dot >= 0 && this.tipVel.length() > 1) {
           this.ballState = "flying";
-          this.ballVel
-            .copy(this.tipVel)
-            .multiplyScalar(this.settings.launchPower);
+          this.ballVel.copy(this.tipVel).multiplyScalar(this.settings.launchPower);
           this.armed = false;
           this.launchFear = Math.max(this.fear, 0.85); // screaming all the way
         }
@@ -1422,19 +1395,12 @@ export default class Sketch {
     if (bestDist < ballR) {
       // lift the 2D normal back to 3D around the axis
       const invRho = rho > 1e-4 ? 1 / rho : 0;
-      _normal3.set(
-        bestNx * local.x * invRho,
-        bestNy,
-        bestNx * local.z * invRho
-      );
+      _normal3.set(bestNx * local.x * invRho, bestNy, bestNx * local.z * invRho);
       if (invRho === 0) _normal3.set(0, 1, 0);
 
       // ball velocity into the local metre frame (uniform scale + rotation)
       this.venueBasket.getWorldQuaternion(_quat);
-      _localVel
-        .copy(this.ballVel)
-        .applyQuaternion(_quat.invert())
-        .divideScalar(CITY_SCALE);
+      _localVel.copy(this.ballVel).applyQuaternion(_quat.invert()).divideScalar(CITY_SCALE);
 
       // push out of the surface
       local.addScaledVector(_normal3, ballR - bestDist);
@@ -1446,14 +1412,9 @@ export default class Sketch {
       }
 
       // write the corrected state back to world space
-      this.ball.position
-        .copy(local)
-        .applyMatrix4(this.venueBasket.matrixWorld);
+      this.ball.position.copy(local).applyMatrix4(this.venueBasket.matrixWorld);
       this.venueBasket.getWorldQuaternion(_quat);
-      this.ballVel
-        .copy(_localVel)
-        .multiplyScalar(CITY_SCALE)
-        .applyQuaternion(_quat);
+      this.ballVel.copy(_localVel).multiplyScalar(CITY_SCALE).applyQuaternion(_quat);
 
       // SUCCESS = the ball made it all the way down to the funnel floor
       if (bestIdx === 0) {
@@ -1523,7 +1484,7 @@ export default class Sketch {
     const rect = this.renderer.domElement.getBoundingClientRect();
     this.pointer.set(
       ((e.clientX - rect.left) / rect.width) * 2 - 1,
-      -((e.clientY - rect.top) / rect.height) * 2 + 1
+      -((e.clientY - rect.top) / rect.height) * 2 + 1,
     );
   }
 
@@ -1563,9 +1524,7 @@ export default class Sketch {
     // drag on a camera-facing plane through the current tip position
     const tipWorld = new THREE.Vector3();
     this.tipHandle.getWorldPosition(tipWorld);
-    const normal = this.camera
-      .getWorldDirection(new THREE.Vector3())
-      .negate();
+    const normal = this.camera.getWorldDirection(new THREE.Vector3()).negate();
     this.dragPlane.setFromNormalAndCoplanarPoint(normal, tipWorld);
 
     // drag by delta: wherever the grab started maps to the CURRENT tip
@@ -1628,10 +1587,7 @@ export default class Sketch {
     // tipPoint already sits at the dragged position; the spring takes over
 
     // arm the catapult only for a real pull (not an accidental tap)
-    const displacement = this._v1
-      .copy(this.tipPoint)
-      .sub(this.tipRest)
-      .length();
+    const displacement = this._v1.copy(this.tipPoint).sub(this.tipRest).length();
     this.armed = displacement > 0.25;
     this.prevDot = -1; // "approaching rest" so the first crossing launches
   }
@@ -1651,15 +1607,13 @@ export default class Sketch {
     // horizontal bend direction; reuse the last one when pointing straight up
     this._v2.set(v.x, 0, v.z);
     if (this._v2.lengthSq() > 1e-8) this.bendDir.copy(this._v2.normalize());
-    const dir = this._v2
-      .copy(this.bendDir)
-      .multiplyScalar(Math.sin(theta));
+    const dir = this._v2.copy(this.bendDir).multiplyScalar(Math.sin(theta));
     dir.y = Math.cos(theta);
 
     const control = this._control.set(
       base.x,
       base.y + STICK_HEIGHT * this.settings.bendShape,
-      base.z
+      base.z,
     );
 
     // arc length grows monotonically with tip distance -> bisection
@@ -1671,7 +1625,10 @@ export default class Sketch {
       if (quadBezierLength(base, control, out) < STICK_HEIGHT) lo = mid;
       else hi = mid;
     }
-    out.copy(dir).multiplyScalar((lo + hi) / 2).add(base);
+    out
+      .copy(dir)
+      .multiplyScalar((lo + hi) / 2)
+      .add(base);
     return out;
   }
 
@@ -1707,7 +1664,7 @@ export default class Sketch {
     const control = new THREE.Vector3(
       base.x,
       base.y + STICK_HEIGHT * this.settings.bendShape,
-      base.z
+      base.z,
     );
     const curve = new THREE.QuadraticBezierCurve3(base, control, this.renderTip);
     curve.getTangent(1, this.tipTangent); // normalized; ball + top bone use it
@@ -1715,9 +1672,7 @@ export default class Sketch {
     this.wiggleBones.forEach((wb, idx) => {
       const next = wb.jointIndex + 1;
       if (next > BONE_COUNT - 1) {
-        desired
-          .copy(this.renderTip)
-          .addScaledVector(this.tipTangent, this.segHeight);
+        desired.copy(this.renderTip).addScaledVector(this.tipTangent, this.segHeight);
       } else {
         // getPointAt = arc-length parameterized: joint targets sit exactly
         // one segment apart ALONG the curve. Uniform-parameter getPoint()
@@ -1784,7 +1739,7 @@ export default class Sketch {
         this.debugSpringDots[idx].position.set(
           wb.springX.currentValue,
           wb.springY.currentValue,
-          wb.springZ.currentValue
+          wb.springZ.currentValue,
         );
       });
     }
