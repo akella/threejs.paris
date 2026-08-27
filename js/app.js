@@ -56,8 +56,7 @@ const POPUP_CTA =
 // --- Paris city tiles ---
 const USE_CITY = true;
 // NOTE: local dev only — move to an env var before deploying anywhere public
-const ION_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6InNkOUVFNTZiRVRpNzhqd2oiLCJqdGkiOiJkNWI5N2EyZC1jZDUzLTQ3NGYtOTRiYy0zOGQ0NDAwYjc3YTIiLCJpZCI6NDY5NTk3LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3ODcxMjczMDl9.slXUJo5iGbpw3_zkrUsnEYOtK3TGc3JWJYmeQQiDfpE";
+const ION_TOKEN = "[ADD YOUR TOKEN]";
 const ION_ASSET_GOOGLE_TILES = "2275207"; // Google Photorealistic 3D Tiles
 const EIFFEL_LAT = 48.85837;
 const EIFFEL_LON = 2.29448;
