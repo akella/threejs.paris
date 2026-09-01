@@ -1,6 +1,6 @@
 # Bend, Aim, Fling: Turning the Eiffel Tower into a Catapult with Three.js
 
-*An interactive Three.js physics experiment where the Eiffel Tower becomes a catapult and launches you across Paris towards Maison de la Chimie, the venue for the first Three.js conference in Paris.*
+*An interactive Three.js physics experiment where the Eiffel Tower becomes a catapult and launches you across Paris towards Maison de la Chimie, the venue for the first [Three.js conference](https://threejs.paris/) in Paris.*
 
 ![Featured Image](https://tympanus.net/codrops/wp-content/uploads/2026/08/EiffelTowerCataputl_cover.png)
 
