@@ -17,6 +17,7 @@ npm run dev
 
 ## Credits
 
+* [Three.js Conference](https://threejs.paris/)
 * [Three.js](https://threejs.org/) — 3D rendering and interactive experience
 * [Cesium ion](https://ion.cesium.com/) — real-world 3D geospatial data and 3D Tiles
 * [Google Photorealistic 3D Tiles](https://developers.google.com/maps/documentation/tile/3d-tiles) — Paris city data
